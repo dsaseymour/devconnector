@@ -5,6 +5,9 @@ const router = express.Router();
 const User = require("../../models/User"); //import the model from User js
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const keys = require("../../config/keys");
+const passport = require("passport");
 
 //@router GET api/users/test
 // @desc tests users route
@@ -49,6 +52,62 @@ router.post("/register", (req, res) => {
       });
     }
   });
+}); //  api/users/register       http://localhost:5000/api/users/register
+
+//@router POST api/users/login
+// @desc Login User / Returning JWToken
+//@access Public
+router.post("/login", (req, res) => {
+  // a form will be sent with the user's email and password
+  const email = req.body.email;
+  const password = req.body.password;
+
+  //find the user via email using the user model
+  //find one gives us a promise but we need to define the next steps if the user is not found
+  // if the user is not found we return a status code 404 with the message "User not found"
+
+  User.findOne({ email: email }).then(user => {
+    if (!user) {
+      return res.status(404).json({ email: "User not found" });
+    }
+    //Use has been found
+    //the password the user provides is plain text, the password in our database is hashed
+    bcrypt.compare(password, user.password).then(isMatch => {
+      if (isMatch) {
+        //the user provided the correct password we need to generate the token
+        //we need to create and send a token
+        //sign token
+        //create the payload we will send to allow user identification once the token reaches the server
+        const payload = { id: user.id, name: user.name, avatar: user.avatar }; //making the jwt payload
+        //for our private key we are using values set in our keys file in the config folder
+        //token expires in an hour
+        //the callback is called with the decoded payload if the signature is valid
+        jwt.sign(
+          payload,
+          keys.secretOrKey,
+          { expiresIn: "1h" },
+          (err, token) => {
+            //sending the token
+            res.json({
+              success: true,
+              token: "Bearer " + token
+            });
+          }
+        );
+      } else {
+        //the user provided password does not match
+        return res.status(400).json({ password: "Password incorrect" });
+      }
+    });
+  });
 }); //  /api/users/test       http://localhost:5000/api/users/test
+//we need passport in order to verify our token
+
+//@router GET api/users/current
+// @desc Return current user
+//@access Private
+router.get("/current", passport.authenticate("jwt"), (req, res) => {
+  res.json({ msg: "Success" });
+});
 
 module.exports = router;
