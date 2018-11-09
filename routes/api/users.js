@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 const passport = require("passport");
 const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
 
 //@router GET api/users/test
 // @desc tests users route
@@ -67,17 +68,24 @@ router.post("/register", (req, res) => {
 // @desc Login User / Returning JWToken
 //@access Public
 router.post("/login", (req, res) => {
+  //Validation Begins----------------------------------------------------------------------
+  const { errors, isValid } = validateLoginInput(req.body);
+  //if isvalid is false then there are errors
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  //Validation Ends------------------------------------------------------------------------
   // a form will be sent with the user's email and password
   const email = req.body.email;
   const password = req.body.password;
-
   //find the user via email using the user model
   //find one gives us a promise but we need to define the next steps if the user is not found
   // if the user is not found we return a status code 404 with the message "User not found"
 
   User.findOne({ email: email }).then(user => {
     if (!user) {
-      return res.status(404).json({ email: "User not found" });
+      errors.email = "User not found";
+      return res.status(404).json(errors);
     }
     //Use has been found
     //the password the user provides is plain text, the password in our database is hashed
@@ -105,7 +113,8 @@ router.post("/login", (req, res) => {
         );
       } else {
         //the user provided password does not match
-        return res.status(400).json({ password: "Password incorrect" });
+        errors.password = "Password incorrect";
+        return res.status(400).json(errors);
       }
     });
   });
