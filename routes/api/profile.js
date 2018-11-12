@@ -7,6 +7,9 @@ const Profile = require("../../models/Profile");
 const User = require("../../models/User");
 const validateProfileInput = require("../../validation/profile");
 
+/* //========================================================================================================================
+//GET  ROUTES BEGIN 
+//========================================================================================================================*/
 /* //========================
 //GET  /TEST BEGINS 
 //========================  */
@@ -35,6 +38,7 @@ router.get(
     const errors = {};
 
     Profile.findOne({ user: req.user.id })
+      .populate("user", ["name", "avatar"])
       .then(profile => {
         if (!profile) {
           errors.noprofile = "There is no profile for this user";
@@ -49,6 +53,99 @@ router.get(
 //GET  / ENDS 
 //========================  */
 
+/* //========================
+//GET  /profile/handle/<actualhandle> BEGINS 
+//========================  */
+//@router GET /profile/handle/<actualhandle>
+// @desc get user profile by handle
+//@access Public     anyone can see profiles
+//we don't need passport middleware since its public
+router.get("/handle/:handle", (req, res) => {
+  const errors = {};
+  Profile.findOne({ handle: req.params.handle })
+    .populate("user", ["name", "avatar"])
+    .then(profile => {
+      if (!profile) {
+        errors.noprofile =
+          "There is no profile matching the handle given for this user";
+        return res.status(404).json(errors);
+      }
+      res.json(profile);
+    })
+    .catch(err =>
+      res.status(404).json({
+        profile: "There is no profile matching the handle given for this user"
+      })
+    );
+}); //  /api/profile/      http://localhost:5000/api/profile/test
+/* //========================
+//GET  /profile/handle/<actualhandle> ENDS 
+//========================  */
+
+/* //========================
+//GET  api/profile/user/:user_id BEGINS 
+//========================  */
+//@router GET api/profile/user/:user_id
+// @desc get user profile by id
+//@access Public     anyone can see profiles
+//we don't need passport middleware since its public
+router.get("/user/:user_id", (req, res) => {
+  const errors = {};
+  Profile.findOne({ user: req.params.user_id })
+    .populate("user", ["name", "avatar"])
+    .then(profile => {
+      if (!profile) {
+        errors.noprofile =
+          "There is no profile matching the id given for this user";
+        return res.status(404).json(errors);
+      }
+      res.json(profile);
+    })
+    .catch(err =>
+      res.status(404).json({
+        profile: "There is no profile matching the id given for this user"
+      })
+    );
+}); //  /api/profile/      http://localhost:5000/api/profile/test
+/* //========================
+//GET  api/profile/user/:user_id ENDS 
+//========================  */
+
+/* //========================
+//GET  api/profile/all
+//========================  */
+//@router GET api/profile/all
+// @desc get all profiles
+//@access Public     anyone can see profiles
+//we don't need passport middleware since its public
+router.get("/all", (req, res) => {
+  const errors = {};
+  Profile.find()
+    .populate("user", ["name", "avatar"])
+    .then(profiles => {
+      if (!profiles) {
+        errors.noprofiles = "There are no profiles currently";
+        return res.status(404).json(errors);
+      }
+      res.json(profiles);
+    })
+    .catch(err =>
+      res.status(404).json({
+        profile: "There are no profiles currently"
+      })
+    );
+}); //  /api/profile/      http://localhost:5000/api/profile/test
+/* //========================
+//GET  api/profile/all ENDS 
+//========================  */
+
+/* //========================================================================================================================
+//GET  ROUTES END 
+//========================================================================================================================*/
+
+/* //========================================================================================================================
+//POST  ROUTES BEGIN 
+//========================================================================================================================*/
 /* //========================
 //POST  / BEGINS 
 //========================  */
@@ -116,5 +213,9 @@ router.post(
 /* //========================
 //POST  / ENDS
 //========================  */
+
+/* //========================================================================================================================
+//POST ROUTES END 
+//========================================================================================================================*/
 
 module.exports = router;
