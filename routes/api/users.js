@@ -11,13 +11,25 @@ const passport = require("passport");
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 
+
+/* //========================
+//GET  / BEGINS
+//========================  */
 //@router GET api/users/test
 // @desc tests users route
 //@access Public       we want private routes because for some routes we only want logged in users to have access
 router.get("/test", (req, res) => {
   res.json({ msg: "Users Works" });
 }); //  /api/users/test       http://localhost:5000/api/users/test
+/* //========================
+//GET  / ENDS
+//========================  */
 
+
+
+/* //========================
+//POST  /register BEGINS
+//========================  */
 //@router POST api/users/register
 // @desc Register user
 //@access Public
@@ -63,7 +75,14 @@ router.post("/register", (req, res) => {
     }
   });
 }); //  api/users/register       http://localhost:5000/api/users/register
+/* //========================
+//POST  /register ENDS
+//========================  */
 
+
+/* //========================
+//POST  /login BEGINS
+//========================  */
 //@router POST api/users/login
 // @desc Login User / Returning JWToken
 //@access Public
@@ -118,9 +137,16 @@ router.post("/login", (req, res) => {
       }
     });
   });
-}); //  /api/users/test       http://localhost:5000/api/users/test
+}); //  /api/users/login       http://localhost:5000/api/login
 //we need passport in order to verify our token
+/* //========================
+//POST  /login ENDS
+//========================  */
 
+
+/* //========================
+//POST  /current BEGINS
+//========================  */
 //@router GET api/users/current
 // @desc Return current user
 //@access Private
@@ -133,5 +159,9 @@ router.get(
     res.json({ id: req.user.id, name: req.user.name, email: req.user.email });
   }
 );
+/* //========================
+//POST  /current ENDS
+//========================  */
+
 
 module.exports = router;
