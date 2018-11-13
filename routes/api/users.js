@@ -11,7 +11,6 @@ const passport = require("passport");
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 
-
 /* //========================
 //GET  / BEGINS
 //========================  */
@@ -24,8 +23,6 @@ router.get("/test", (req, res) => {
 /* //========================
 //GET  / ENDS
 //========================  */
-
-
 
 /* //========================
 //POST  /register BEGINS
@@ -41,6 +38,7 @@ router.post("/register", (req, res) => {
     return res.status(400).json(errors);
   }
   //Validation Ends------------------------------------------------------------------------
+  //User Find Begins-------------------------
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
       errors.email = "Email already exists";
@@ -74,11 +72,11 @@ router.post("/register", (req, res) => {
       });
     }
   });
+  //User Find Ends-------------------------
 }); //  api/users/register       http://localhost:5000/api/users/register
 /* //========================
 //POST  /register ENDS
 //========================  */
-
 
 /* //========================
 //POST  /login BEGINS
@@ -100,7 +98,7 @@ router.post("/login", (req, res) => {
   //find the user via email using the user model
   //find one gives us a promise but we need to define the next steps if the user is not found
   // if the user is not found we return a status code 404 with the message "User not found"
-
+  //User Find Begins-------------------------
   User.findOne({ email: email }).then(user => {
     if (!user) {
       errors.email = "User not found";
@@ -137,12 +135,12 @@ router.post("/login", (req, res) => {
       }
     });
   });
+  //User Find Ends-------------------------
 }); //  /api/users/login       http://localhost:5000/api/login
 //we need passport in order to verify our token
 /* //========================
 //POST  /login ENDS
 //========================  */
-
 
 /* //========================
 //POST  /current BEGINS
@@ -162,6 +160,5 @@ router.get(
 /* //========================
 //POST  /current ENDS
 //========================  */
-
 
 module.exports = router;
