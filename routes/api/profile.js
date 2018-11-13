@@ -323,4 +323,110 @@ router.post(
 //POST ROUTES END 
 //========================================================================================================================*/
 
+/* //========================================================================================================================
+//DELETE  ROUTES BEGIN 
+//========================================================================================================================*/
+/* //========================
+//DELETE  /experience BEGINS 
+//========================  */
+//@router DELETE api/profile/experience/: exp_id
+// @desc Delete experience from profile
+//@access Private
+router.delete(
+  "/experience/:exp_id",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  (req, res) => {
+    //Profile Find Begins-------------------------
+    Profile.findOne({ user: req.user.id }).then(profile => {
+      if (profile) {
+        //get experience removal index
+        const removeIndex = profile.experience
+          .map(item => item.id)
+          .indexOf(req.params.exp_id); // get the correct experience to delete
+        profile.experience.splice(removeIndex, 1);
+        profile
+          .save()
+          .then(profile => res.json(profile))
+          .catch(err => res.status(404).json(err));
+      } else {
+        //a profile does not exist
+        errors.handle = "Profile does not exist";
+        res.status(400).json(errors);
+      }
+    });
+    //Profile Find Ends-------------------------
+  }
+); //  /api/profile/experience      http://localhost:5000/api/profile/experience
+/* //========================
+//DELETE  /experience ENDS
+//========================  */
+
+/* //========================
+//DELETE  /education BEGINS 
+//========================  */
+//@router DELETE api/profile/education/: edu_id
+// @desc Delete education from profile
+//@access Private
+router.delete(
+  "/education/:edu_id",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  (req, res) => {
+    //Profile Find Begins-------------------------
+    Profile.findOne({ user: req.user.id }).then(profile => {
+      if (profile) {
+        //get education removal index
+        const removeIndex = profile.education
+          .map(item => item.id)
+          .indexOf(req.params.edu_id); // get the correct education to delete
+        profile.education.splice(removeIndex, 1);
+        profile
+          .save()
+          .then(profile => res.json(profile))
+          .catch(err => res.status(404).json(err));
+      } else {
+        //a profile does not exist
+        errors.handle = "Profile does not exist";
+        res.status(400).json(errors);
+      }
+    });
+    //Profile Find Ends-------------------------
+  }
+); //  /api/profile/education      http://localhost:5000/api/profile/education
+/* //========================
+//DELETE  /education ENDS
+//========================  */
+
+/* //========================
+//DELETE  /profile BEGINS 
+//========================  */
+//@router DELETE api/profile/education/: edu_id
+// @desc delete user and profile
+//@access Private
+router.delete(
+  "/",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  (req, res) => {
+    //Profile Find Begins-------------------------
+    Profile.findOneAndRemove({ user: req.user.id }).then(() => {
+      User.findOneAndRemove({ _id: req.user.id }).then(() => {
+        res.json({ success: true });
+      });
+    });
+    //Profile Find Ends-------------------------
+  }
+); //  /api/profile/      http://localhost:5000/api/profile/
+/* //========================
+//DELETE  /profile ENDS
+//========================  */
+
+/* //========================================================================================================================
+//DELETE ROUTES END 
+//========================================================================================================================*/
+
 module.exports = router;
