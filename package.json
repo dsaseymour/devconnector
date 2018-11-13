@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "live-server": "live-server"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "validator": "^10.8.0"
   },
   "devDependencies": {
+    "live-server": "^1.2.0",
     "nodemon": "^1.18.6"
   }
 }
