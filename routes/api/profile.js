@@ -49,7 +49,7 @@ router.get(
         res.json(profile);
       })
       .catch(err => res.status(404).json(err));
-    //Profile Find Begins-------------------------
+    //Profile Find Ends-------------------------
   }
 ); //  /api/profile/      http://localhost:5000/api/profile/test
 /* //========================
@@ -338,6 +338,7 @@ router.delete(
     session: false
   }),
   (req, res) => {
+    const errors = {};
     //Profile Find Begins-------------------------
     Profile.findOne({ user: req.user.id }).then(profile => {
       if (profile) {
@@ -352,7 +353,7 @@ router.delete(
           .catch(err => res.status(404).json(err));
       } else {
         //a profile does not exist
-        errors.handle = "Profile does not exist";
+        errors.deleteexperience = "Profile does not exist";
         res.status(400).json(errors);
       }
     });
@@ -375,6 +376,7 @@ router.delete(
     session: false
   }),
   (req, res) => {
+    const errors = {};
     //Profile Find Begins-------------------------
     Profile.findOne({ user: req.user.id }).then(profile => {
       if (profile) {
