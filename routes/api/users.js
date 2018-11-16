@@ -28,6 +28,25 @@ router.get("/test", (req, res) => {
 //GET  / ENDS
 //========================  */
 
+/* //========================
+//GET  /current BEGINS
+//========================  */
+//@router GET api/users/current
+// @desc Return current user
+//@access Private
+router.get(
+  "/current",
+  passport.authenticate("jwt", {
+    session: false
+  }),
+  (req, res) => {
+    res.json({ id: req.user.id, name: req.user.name, email: req.user.email });
+  }
+);
+/* //========================
+//GET  /current ENDS
+//========================  */
+
 /* //========================================================================================================================
 //GET  ROUTES END 
 //========================================================================================================================*/
@@ -152,25 +171,6 @@ router.post("/login", (req, res) => {
 //we need passport in order to verify our token
 /* //========================
 //POST  /login ENDS
-//========================  */
-
-/* //========================
-//POST  /current BEGINS
-//========================  */
-//@router GET api/users/current
-// @desc Return current user
-//@access Private
-router.get(
-  "/current",
-  passport.authenticate("jwt", {
-    session: false
-  }),
-  (req, res) => {
-    res.json({ id: req.user.id, name: req.user.name, email: req.user.email });
-  }
-);
-/* //========================
-//POST  /current ENDS
 //========================  */
 
 /* //========================================================================================================================
