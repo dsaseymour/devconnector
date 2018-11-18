@@ -25,6 +25,7 @@ class Register extends Component {
       this.setState({ errors: nextProps.errors });
     }
   }
+  //errors are in the state
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
