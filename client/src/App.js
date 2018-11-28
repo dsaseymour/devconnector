@@ -18,15 +18,11 @@ import Login from "./components/auth/Login";
 //Check whether the user is logged in or not on each page request
 //look for token in local storage if the token exists set the auth token header
 //decode the token and get data
-/*
-
 if (localStorage.jwtToken) {
   setAuthToken(localStorage.jwtToken);
   const decoded = jwt_decode(localStorage.jwtToken);
   store.dispatch(setCurrentUser(decoded));
 }
-
- */
 
 class App extends Component {
   render() {
